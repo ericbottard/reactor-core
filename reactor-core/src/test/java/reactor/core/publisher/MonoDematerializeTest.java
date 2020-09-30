@@ -15,9 +15,8 @@
  */
 package reactor.core.publisher;
 
+import org.junit.jupiter.api.Test;
 import java.time.Duration;
-
-import org.junit.Test;
 
 import reactor.test.StepVerifier;
 import reactor.test.publisher.PublisherProbe;

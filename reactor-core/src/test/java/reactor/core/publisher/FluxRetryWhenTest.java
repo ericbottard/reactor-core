@@ -30,7 +30,8 @@ import java.util.stream.Collectors;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.LongAssert;
 import org.assertj.core.data.Percentage;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscription;
 
 import reactor.core.CoreSubscriber;
@@ -47,6 +48,7 @@ import reactor.util.retry.Retry;
 import reactor.util.retry.RetryBackoffSpec;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class FluxRetryWhenTest {
 
@@ -56,23 +58,25 @@ public class FluxRetryWhenTest {
 	Flux<Integer> rangeError = Flux.concat(Flux.range(1, 2),
 			Flux.error(new RuntimeException("forced failure 0")));
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void sourceNull() {
-		new FluxRetryWhen<>(null, Retry.from(v -> v));
+		assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
+			new FluxRetryWhen<>(null, Retry.from(v -> v));
+		});
 	}
 
-	@SuppressWarnings({"deprecation", "unchecked", "rawtypes", "ConstantConditions"})
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void whenThrowableFactoryNull() {
-		Flux.never()
-		    .retryWhen((Function) null);
+		assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
+			Flux.never().retryWhen((Function) null);
+		});
 	}
 
-	@SuppressWarnings("ConstantConditions")
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void whenRetrySignalFactoryNull() {
-		Flux.never()
-		    .retryWhen((Retry) null);
+		assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
+			Flux.never().retryWhen((Retry) null);
+		});
 	}
 
 	@Test

@@ -24,7 +24,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.reactivestreams.Subscription;
 import reactor.core.CoreSubscriber;
 import reactor.core.Exceptions;
@@ -37,6 +37,7 @@ import reactor.test.publisher.TestPublisher;
 import reactor.util.concurrent.Queues;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
 public class FluxOnBackpressureBufferTest
@@ -51,31 +52,33 @@ public class FluxOnBackpressureBufferTest
 		final Flux<String> test2 = tp2.flux().onBackpressureBuffer(3, s -> { });
 
 		StepVerifier.create(test1, StepVerifierOptions.create()
-		                                              .scenarioName("without consumer")
-		                                              .initialRequest(0))
-		            .expectSubscription()
-		            .then(() -> tp1.next("A", "B", "C", "D"))
-		            .expectNoEvent(Duration.ofMillis(100))
-		            .thenRequest(3)
-		            .expectNext("A", "B", "C")
-		            .expectErrorMatches(Exceptions::isOverflow)
-		            .verify(Duration.ofSeconds(5));
+				.scenarioName("without consumer")
+				.initialRequest(0))
+				.expectSubscription()
+				.then(() -> tp1.next("A", "B", "C", "D"))
+				.expectNoEvent(Duration.ofMillis(100))
+				.thenRequest(3)
+				.expectNext("A", "B", "C")
+				.expectErrorMatches(Exceptions::isOverflow)
+				.verify(Duration.ofSeconds(5));
 
 		StepVerifier.create(test2, StepVerifierOptions.create()
-		                                             .scenarioName("with consumer")
-		                                             .initialRequest(0))
-		            .expectSubscription()
-		            .then(() -> tp2.next("A", "B", "C", "D"))
-		            .expectNoEvent(Duration.ofMillis(100))
-		            .thenRequest(3)
-		            .expectNext("A", "B", "C")
-		            .expectErrorMatches(Exceptions::isOverflow)
-		            .verify(Duration.ofSeconds(5));
+				.scenarioName("with consumer")
+				.initialRequest(0))
+				.expectSubscription()
+				.then(() -> tp2.next("A", "B", "C", "D"))
+				.expectNoEvent(Duration.ofMillis(100))
+				.thenRequest(3)
+				.expectNext("A", "B", "C")
+				.expectErrorMatches(Exceptions::isOverflow)
+				.verify(Duration.ofSeconds(5));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
-	public void failNegativeHistory(){
-		Flux.never().onBackpressureBuffer(-1);
+	@Test
+	public void failNegativeHistory() {
+		assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+			Flux.never().onBackpressureBuffer(-1);
+		});
 	}
 
 	@Override

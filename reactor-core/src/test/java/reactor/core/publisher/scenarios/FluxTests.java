@@ -48,10 +48,12 @@ import java.util.stream.IntStream;
 
 import org.assertj.core.api.Assertions;
 import org.hamcrest.Matcher;
-import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.reactivestreams.Processor;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscription;
 
@@ -77,6 +79,7 @@ import reactor.util.Loggers;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
 
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -89,6 +92,13 @@ public class FluxTests extends AbstractReactorTest {
 	static final Logger LOG = Loggers.getLogger(FluxTests.class);
 
 	static final String2Integer STRING_2_INTEGER = new String2Integer();
+
+	//simplifies fluxFromXXXCallsAssemblyHook tests below
+	@AfterEach
+	public void resetHooks() {
+		Hooks.resetOnEachOperator();
+		Hooks.resetOnLastOperator();
+	}
 
 	@Test
 	public void discardLocalMultipleFilters() {
@@ -270,9 +280,11 @@ public class FluxTests extends AbstractReactorTest {
 				is("foo"));
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testDoOnEachSignalNullConsumer() {
-		Flux.just(1).doOnEach(null);
+		assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
+			Flux.just(1).doOnEach(null);
+		});
 	}
 
 	@Test
@@ -1241,7 +1253,7 @@ public class FluxTests extends AbstractReactorTest {
 	 * @throws TimeoutException     - on failure. <p> by @masterav10 : https://github.com/reactor/reactor/issues/469
 	 */
 	@Test
-	@Ignore
+	@Disabled
 	public void endLessTimer() throws InterruptedException, TimeoutException {
 		int tasks = 50;
 		long delayMS = 50; // XXX: Fails when less than 100
@@ -1338,7 +1350,8 @@ public class FluxTests extends AbstractReactorTest {
 	 * </pre>
      * @throws Exception for convenience
 	 */
-	@Test(timeout = TIMEOUT)
+	@Test
+	@Timeout(10)
 	public void multiplexUsingDispatchersAndSplit() throws Exception {
 
 		final EmitterProcessor<Integer> forkEmitterProcessor = EmitterProcessor.create();
@@ -1439,7 +1452,7 @@ public class FluxTests extends AbstractReactorTest {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void splitBugEventuallyHappens() throws Exception {
 		int successCount = 0;
 		try {
@@ -1640,8 +1653,6 @@ public class FluxTests extends AbstractReactorTest {
 		source.next();
 		Assertions.assertThat(wrappedCount).hasValue(1);
 	}
-
-	private static final long TIMEOUT = 10_000;
 
 	// Setting it to 1 doesn't help.
 	private static final int BACKLOG = 1024;

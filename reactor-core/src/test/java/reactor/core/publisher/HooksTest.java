@@ -30,8 +30,9 @@ import java.util.function.Function;
 import java.util.logging.Level;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscription;
 
@@ -52,6 +53,16 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * @author Stephane Maldini
  */
 public class HooksTest {
+
+	@AfterEach
+	public void resetAllHooks() {
+		Hooks.resetOnOperatorError();
+		Hooks.resetOnNextDropped();
+		Hooks.resetOnErrorDropped();
+		Hooks.resetOnOperatorDebug();
+		Hooks.resetOnEachOperator();
+		Hooks.resetOnLastOperator();
+	}
 
 	void simpleFlux(){
 		Flux.just(1)

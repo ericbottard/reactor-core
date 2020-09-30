@@ -45,9 +45,8 @@ import java.util.stream.Stream;
 import com.pivovarit.function.ThrowingRunnable;
 import com.pivovarit.function.ThrowingSupplier;
 import org.awaitility.Awaitility;
-import org.junit.AfterClass;
-import org.junit.Test;
-
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Test;
 import reactor.core.Disposable;
 import reactor.core.Disposables;
 import reactor.core.Scannable;
@@ -64,7 +63,9 @@ import reactor.test.util.RaceTestUtils;
 import reactor.util.Logger;
 import reactor.util.Loggers;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 /**
  * @author Simon Baslé
@@ -91,7 +92,7 @@ public class BoundedElasticSchedulerTest extends AbstractSchedulerTest {
 		return true;
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void dumpThreads() {
 		LOGGER.debug("Remaining threads after test class:");
 		LOGGER.debug(dumpThreadNames().collect(Collectors.joining(", ")));

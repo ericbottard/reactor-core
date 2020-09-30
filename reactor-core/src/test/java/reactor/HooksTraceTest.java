@@ -19,7 +19,8 @@ package reactor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscription;
 
@@ -39,6 +40,13 @@ import static org.assertj.core.api.Assertions.*;
  * @author Stephane Maldini
  */
 public class HooksTraceTest {
+
+	@AfterEach
+	public void resetHooks() {
+		Hooks.resetOnEachOperator();
+		Hooks.resetOnLastOperator();
+		Hooks.resetOnOperatorDebug();
+	}
 
 	@Test
 	public void testTrace() {
