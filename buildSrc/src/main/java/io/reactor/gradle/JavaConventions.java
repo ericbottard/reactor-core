@@ -65,8 +65,8 @@ public class JavaConventions implements Plugin<Project> {
 					       "-Xlint:-options",     // intentionally disabled
 					       "-Xlint:-fallthrough", // intentionally disabled
 					       "-Xlint:-rawtypes",     // TODO enable and fix warnings
-						   "-Xmaxwarns",
-						   "1000"
+						   "-Xmaxerrs", "1000",
+						   "-Xmaxwarns", "1"
 			       ));
 		       });
 

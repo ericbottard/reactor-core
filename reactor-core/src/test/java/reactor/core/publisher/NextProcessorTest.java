@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
@@ -40,6 +40,7 @@ import reactor.util.function.Tuple2;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class NextProcessorTest {
 
@@ -100,22 +101,21 @@ public class NextProcessorTest {
 
 		future.completeExceptionally(new IllegalStateException());
 
-		assertThatExceptionOfType(IllegalStateException.class)
-				.isThrownBy(data::block);
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(data::block);
 
 		future = null;
 		source = null;
 		System.gc();
 
 		int cycles;
-		for (cycles = 10; cycles > 0 ; cycles--) {
+		for (cycles = 10; cycles > 0; cycles--) {
 			if (refFuture.get() == null) break;
 			Thread.sleep(100);
 		}
 
 		assertThat(refFuture.get()).isNull();
 		assertThat(cycles).isNotZero()
-		                  .isPositive();
+				.isPositive();
 	}
 
 	@Test
@@ -145,10 +145,12 @@ public class NextProcessorTest {
 		                  .isPositive();
 	}
 
-	@Test(expected = IllegalStateException.class)
-	public void resultNotAvailable() {
-		NextProcessor<String> mp = new NextProcessor<>(null);
-		mp.block(Duration.ofMillis(1));
+	@Test
+	public void MonoProcessorResultNotAvailable() {
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
+			NextProcessor<String> mp = new NextProcessor<>(null);
+			mp.block(Duration.ofMillis(1));
+		});
 	}
 
 	@SuppressWarnings("deprecation")
@@ -244,11 +246,13 @@ public class NextProcessorTest {
 		assertThat(mp.isError()).isTrue();
 	}
 
-	@Test(expected = NullPointerException.class)
-	public void rejectedSubscribeCallbackNull() {
+	@Test
+	public void MonoProcessorRejectedSubscribeCallbackNull() {
 		NextProcessor<String> mp = new NextProcessor<>(null);
 
-		mp.subscribe((Subscriber<String>)null);
+		assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
+			mp.subscribe((Subscriber<String>) null);
+		});
 	}
 
 	@Test
@@ -377,8 +381,8 @@ public class NextProcessorTest {
 			mp.onError(new Exception("test"));
 			mp.onError(new Exception("test2"));
 			Assertions.assertThat(testLogger.getErrContent())
-			          .contains("Operator called default onErrorDropped")
-			          .contains("test2");
+					.contains("Operator called default onErrorDropped")
+					.contains("test2");
 		}
 		finally {
 			LoggerUtils.resetAppender(Operators.class);
@@ -396,8 +400,8 @@ public class NextProcessorTest {
 			mp.onError(new Exception("test2"));
 
 			Assertions.assertThat(testLogger.getErrContent())
-			          .contains("Operator called default onErrorDropped")
-			          .contains("test2");
+					.contains("Operator called default onErrorDropped")
+					.contains("test2");
 		}
 		finally {
 			LoggerUtils.resetAppender(Operators.class);

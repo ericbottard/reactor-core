@@ -26,31 +26,33 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import org.assertj.core.api.Assertions;
-import org.junit.AfterClass;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import reactor.core.Exceptions;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 import reactor.test.StepVerifier;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.assertj.core.api.AssertionsForClassTypes.*;
+
 
 public class BlockingTests {
 
 	static Scheduler scheduler;
 	static Scheduler nonBlockingScheduler;
 
-	@BeforeClass
+	@BeforeAll
 	public static void before() {
 		scheduler = Schedulers.fromExecutorService(Executors.newSingleThreadExecutor());
 		nonBlockingScheduler = Schedulers.newSingle("nonBlockingScheduler");
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void after() {
 		scheduler.dispose();
 		nonBlockingScheduler.dispose();
@@ -116,32 +118,40 @@ public class BlockingTests {
 				.withMessage("Timeout on blocking read for 50 NANOSECONDS");
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void blockingFirstError() {
-		Flux.error(new RuntimeException("test"))
-		    .publishOn(scheduler)
-		    .blockFirst();
+		assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> {
+			Flux.error(new RuntimeException("test"))
+					.publishOn(scheduler)
+					.blockFirst();
+		});
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void blockingFirstError2() {
-		Flux.error(new RuntimeException("test"))
-		    .publishOn(scheduler)
-		    .blockFirst(Duration.ofSeconds(1));
+		assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> {
+			Flux.error(new RuntimeException("test"))
+					.publishOn(scheduler)
+					.blockFirst(Duration.ofSeconds(1));
+		});
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void blockingLastError() {
-		Flux.defer(() -> Mono.error(new RuntimeException("test")))
-		    .subscribeOn(scheduler)
-		    .blockLast();
+		assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> {
+			Flux.defer(() -> Mono.error(new RuntimeException("test")))
+					.subscribeOn(scheduler)
+					.blockLast();
+		});
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void blockingLastError2() {
-		Flux.defer(() -> Mono.error(new RuntimeException("test")))
-		    .subscribeOn(scheduler)
-		    .blockLast(Duration.ofSeconds(1));
+		assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> {
+			Flux.defer(() -> Mono.error(new RuntimeException("test")))
+					.subscribeOn(scheduler)
+					.blockLast(Duration.ofSeconds(1));
+		});
 	}
 
 	@Test

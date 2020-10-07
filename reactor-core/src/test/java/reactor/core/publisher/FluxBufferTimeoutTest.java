@@ -27,8 +27,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.reactivestreams.Subscription;
 
 import reactor.core.CoreSubscriber;
@@ -47,7 +47,7 @@ import static reactor.core.Scannable.from;
 
 public class FluxBufferTimeoutTest {
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		VirtualTimeScheduler.reset();
 	}

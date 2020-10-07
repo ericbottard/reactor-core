@@ -19,13 +19,12 @@ import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.pivovarit.function.ThrowingRunnable;
 import org.assertj.core.data.Offset;
-import org.junit.Test;
-
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import reactor.core.Disposable;
 import reactor.core.Scannable;
 import reactor.core.publisher.Flux;
@@ -35,6 +34,7 @@ import reactor.util.Logger;
 import reactor.util.Loggers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 /**
@@ -70,12 +70,15 @@ public class ElasticSchedulerTest extends AbstractSchedulerTest {
 		assertThatCode(scheduler::start).as("restart").doesNotThrowAnyException();
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void negativeTime() throws Exception {
-		Schedulers.newElastic("test", -1);
+		assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+			Schedulers.newElastic("test", -1);
+		});
 	}
 
-	@Test(timeout = 10000)
+	@Test
+	@Timeout(10)
 	public void eviction() throws Exception {
 		Scheduler s = Schedulers.newElastic("test-recycle", 2);
 		((ElasticScheduler)s).evictor.shutdownNow();

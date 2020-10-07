@@ -24,12 +24,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -42,7 +40,6 @@ import reactor.util.context.ContextView;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
-@RunWith(JUnitParamsRunner.class)
 public class ContextLossDetectionTest {
 
 	public static List<ContextTestCase> sources() {
@@ -99,18 +96,18 @@ public class ContextLossDetectionTest {
 		);
 	}
 
-	@BeforeClass
+	@BeforeAll
 	public static void beforeClass() {
 		Hooks.enableContextLossTracking();
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void afterClass() {
 		Hooks.disableContextLossTracking();
 	}
 
-	@Test
-	@Parameters(method = "sources")
+	@ParameterizedTest
+	@MethodSource("sources")
 	public void transformDeferredDetectsContextLoss(ContextTestCase fn) {
 		LossyTransformer transformer = new LossyTransformer(fn + "'s badTransformer",
 				Context.of("foo", "baz"));
@@ -121,8 +118,8 @@ public class ContextLossDetectionTest {
 				.withMessage("Context loss after applying " + fn + "'s badTransformer");
 	}
 
-	@Test
-	@Parameters(method = "sources")
+	@ParameterizedTest
+	@MethodSource("sources")
 	public void transformDeferredDetectsContextLossWithEmptyContext(ContextTestCase fn) {
 		LossyTransformer transformer = new LossyTransformer(fn + "'s badTransformer",
 				Context.empty());
@@ -133,8 +130,8 @@ public class ContextLossDetectionTest {
 				.withMessage("Context loss after applying " + fn + "'s badTransformer");
 	}
 
-	@Test
-	@Parameters(method = "sources")
+	@ParameterizedTest
+	@MethodSource("sources")
 	public void transformDeferredDetectsContextLossWithDefaultContext(ContextTestCase fn) {
 		LossyTransformer transformer = new LossyTransformer(fn + "'s badTransformer", true);
 
@@ -144,8 +141,8 @@ public class ContextLossDetectionTest {
 				.withMessage("Context loss after applying " + fn + "'s badTransformer");
 	}
 
-	@Test
-	@Parameters(method = "sources")
+	@ParameterizedTest
+	@MethodSource("sources")
 	public void transformDeferredDetectsContextLossWithRSSubscriber(ContextTestCase fn) {
 		LossyTransformer transformer = new LossyTransformer(fn + "'s badTransformer", false);
 

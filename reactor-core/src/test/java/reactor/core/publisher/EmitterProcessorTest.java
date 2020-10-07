@@ -27,8 +27,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.reactivestreams.Processor;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -46,10 +46,15 @@ import reactor.util.concurrent.Queues;
 import reactor.util.context.Context;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static reactor.core.Scannable.Attr;
-import static reactor.core.Scannable.Attr.*;
+import static reactor.core.Scannable.Attr.BUFFERED;
+import static reactor.core.Scannable.Attr.CANCELLED;
+import static reactor.core.Scannable.Attr.CAPACITY;
+import static reactor.core.Scannable.Attr.PREFETCH;
+import static reactor.core.Scannable.Attr.TERMINATED;
 
 /**
  * @author Stephane Maldini
@@ -252,24 +257,32 @@ public class EmitterProcessorTest {
 
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void onNextNull() {
-		EmitterProcessor.create().onNext(null);
+		assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
+			EmitterProcessor.create().onNext(null);
+		});
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void onErrorNull() {
-		EmitterProcessor.create().onError(null);
+		assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
+			EmitterProcessor.create().onError(null);
+		});
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void onSubscribeNull() {
-		EmitterProcessor.create().onSubscribe(null);
+		assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
+			EmitterProcessor.create().onSubscribe(null);
+		});
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void subscribeNull() {
-		EmitterProcessor.create().subscribe((Subscriber<Object>)null);
+		assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
+			EmitterProcessor.create().subscribe((Subscriber<Object>) null);
+		});
 	}
 
 	@Test
@@ -411,19 +424,25 @@ public class EmitterProcessorTest {
 	}
 
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void failNullBufferSize() {
-		EmitterProcessor.create(0);
+		assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+			EmitterProcessor.create(0);
+		});
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void failNullNext() {
-		EmitterProcessor.create().onNext(null);
+		assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
+			EmitterProcessor.create().onNext(null);
+		});
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void failNullError() {
-		EmitterProcessor.create().onError(null);
+		assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
+			EmitterProcessor.create().onError(null);
+		});
 	}
 
 	@Test
@@ -462,9 +481,11 @@ public class EmitterProcessorTest {
 		assertThat(ep.sink().isCancelled()).isTrue();
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void failNegativeBufferSize() {
-		EmitterProcessor.create(-1);
+		assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+			EmitterProcessor.create(-1);
+		});
 	}
 
 	static final List<String> DATA     = new ArrayList<>();
@@ -609,7 +630,7 @@ public class EmitterProcessorTest {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testRacing() throws Exception {
 		int N_THREADS = 3;
 		int N_ITEMS = 8;

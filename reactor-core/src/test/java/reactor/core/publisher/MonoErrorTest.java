@@ -15,11 +15,12 @@
  */
 package reactor.core.publisher;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import reactor.core.Scannable;
 import reactor.test.StepVerifier;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class MonoErrorTest {
 
@@ -29,10 +30,12 @@ public class MonoErrorTest {
 		            .verifyErrorMessage("test");
 	}
 
-	@Test(expected = Exception.class)
+	@Test
 	public void onMonoRejectedThrowOnBlock() {
-		Mono.error(new Exception("test"))
-		    .block();
+		assertThatExceptionOfType(Exception.class).isThrownBy(() -> {
+			Mono.error(new Exception("test"))
+					.block();
+		});
 	}
 
 	@Test

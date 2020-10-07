@@ -18,9 +18,9 @@ package reactor.core.publisher;
 
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import java.util.function.Supplier;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 import reactor.core.Scannable;
 import reactor.test.StepVerifier;
 

@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.pivovarit.function.ThrowingRunnable;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import reactor.core.Exceptions;
 import reactor.core.Scannable;
