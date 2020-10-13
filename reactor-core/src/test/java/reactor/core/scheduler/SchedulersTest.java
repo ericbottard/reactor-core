@@ -512,10 +512,8 @@ public class SchedulersTest {
 
 
 		Assert.assertNotSame(cachedTimerOld, standaloneTimer);
-		Assert.assertNotNull(cachedTimerOld.schedule(() -> {
-		}));
-		Assert.assertNotNull(standaloneTimer.schedule(() -> {
-		}));
+		Assert.assertNotNull(cachedTimerOld.schedule(() -> {}));
+		Assert.assertNotNull(standaloneTimer.schedule(() -> {}));
 
 		Schedulers.setFactory(ts2);
 		Scheduler cachedTimerNew = Schedulers.newSingle("unused");
@@ -526,11 +524,9 @@ public class SchedulersTest {
 		assertThatExceptionOfType(RejectedExecutionException.class).isThrownBy(() -> cachedTimerOld.schedule(() -> {
 		}));
 		//independently created schedulers are still the programmer"s responsibility
-		Assert.assertNotNull(standaloneTimer.schedule(() -> {
-		}));
+		Assert.assertNotNull(standaloneTimer.schedule(() -> {}));
 		//new factory = new alive cached scheduler
-		Assert.assertNotNull(cachedTimerNew.schedule(() -> {
-		}));
+		Assert.assertNotNull(cachedTimerNew.schedule(() -> {}));
 	}
 
 	@Test
