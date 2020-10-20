@@ -21,7 +21,6 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.reactivestreams.Subscription;
@@ -194,12 +193,12 @@ public class MonoSubscribeOnTest {
 		Mono<Integer> p = Mono.fromCallable(count::incrementAndGet)
 		                      .subscribeOn(Schedulers.fromExecutorService(ForkJoinPool.commonPool()));
 
-		Assert.assertEquals(0, count.get());
+		assertThat(count.get()).isEqualTo(0);
 
 		p.subscribeWith(AssertSubscriber.create())
 		 .await();
 
-		Assert.assertEquals(1, count.get());
+		assertThat(count.get()).isEqualTo(1);
 	}
 
 	@Test

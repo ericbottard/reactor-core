@@ -19,12 +19,10 @@ package reactor.core.publisher;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.reactivestreams.Subscription;
 import reactor.core.CoreSubscriber;
@@ -108,7 +106,7 @@ public class MonoCollectTest {
 
 		ts.assertNoValues()
 		  .assertError(RuntimeException.class)
-		  .assertErrorWith( e -> Assert.assertTrue(e.getMessage().contains("forced failure")))
+		  .assertErrorWith( e -> assertThat(e).hasMessageContaining("forced failure"))
 		  .assertNotComplete();
 
 	}
@@ -135,7 +133,7 @@ public class MonoCollectTest {
 
 		ts.assertNoValues()
 		  .assertError(RuntimeException.class)
-		  .assertErrorWith( e -> Assert.assertTrue(e.getMessage().contains("forced failure")))
+		  .assertErrorWith(e -> assertThat(e).hasMessageContaining("forced failure"))
 		  .assertNotComplete();
 	}
 

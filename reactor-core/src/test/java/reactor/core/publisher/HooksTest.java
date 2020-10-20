@@ -30,7 +30,6 @@ import java.util.function.Function;
 import java.util.logging.Level;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscription;
@@ -529,30 +528,16 @@ public class HooksTest {
 
 		Throwable w = Operators.onOperatorError(null, new Exception(), "hello", Context.empty());
 
-		Assert.assertTrue(w instanceof TestException);
-		Assert.assertTrue(w.getMessage()
-		                   .equals("hello"));
+		assertThat(w).isInstanceOf(TestException.class);
+		assertThat(w).hasMessage("hello");
 
-		try {
+		assertThatExceptionOfType(TestException.class).isThrownBy(() -> {
 			Operators.onNextDropped("hello", Context.empty());
-			Assert.fail();
-		}
-		catch (Throwable t) {
-			t.printStackTrace();
-			Assert.assertTrue(t instanceof TestException);
-			Assert.assertTrue(t.getMessage()
-			                   .equals("hello"));
-		}
+		}).withMessage("hello");
 
-		try {
+		assertThatExceptionOfType(TestException.class).isThrownBy(() -> {
 			Operators.onErrorDropped(new Exception(), Context.empty());
-			Assert.fail();
-		}
-		catch (Throwable t) {
-			Assert.assertTrue(t instanceof TestException);
-			Assert.assertTrue(t.getMessage()
-			                   .equals("errorDrop"));
-		}
+		}).withMessage("errorDrop");
 	}
 
 	@Test

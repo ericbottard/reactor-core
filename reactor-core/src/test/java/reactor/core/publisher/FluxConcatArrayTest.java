@@ -18,7 +18,6 @@ package reactor.core.publisher;
 
 import java.util.Arrays;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscription;
@@ -174,10 +173,10 @@ public class FluxConcatArrayTest {
 		Flux<String> f = Flux.concat(Flux.just("test"), Flux.just("test2"))
 		                     .concatWith(Flux.just("test3"));
 
-		Assert.assertTrue(f instanceof FluxConcatArray);
+		assertThat(f instanceof FluxConcatArray).isTrue();
 		FluxConcatArray<String> s = (FluxConcatArray<String>) f;
-		Assert.assertTrue(s.array != null);
-		Assert.assertTrue(s.array.length == 3);
+		assertThat(s.array != null).isTrue();
+		assertThat(s.array.length == 3).isTrue();
 
 		StepVerifier.create(f)
 	                .expectNext("test", "test2", "test3")
@@ -190,10 +189,10 @@ public class FluxConcatArrayTest {
 		Flux<String> f = Mono.just("test")
 		                     .concatWith(Flux.just("test2"));
 
-		Assert.assertTrue(f instanceof FluxConcatArray);
+		assertThat(f instanceof FluxConcatArray).isTrue();
 		FluxConcatArray<String> s = (FluxConcatArray<String>) f;
-		Assert.assertTrue(s.array != null);
-		Assert.assertTrue(s.array.length == 2);
+		assertThat(s.array != null).isTrue();
+		assertThat(s.array.length == 2).isTrue();
 
 		StepVerifier.create(f)
 	                .expectNext("test", "test2")

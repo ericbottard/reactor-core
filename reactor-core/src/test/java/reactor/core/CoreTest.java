@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 import reactor.util.annotation.Nullable;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.fail;
 
 /**
  * @author Stephane Maldini
@@ -58,7 +58,7 @@ public class CoreTest {
 	final void testUnsupported(Runnable r){
 		try{
 			r.run();
-			fail();
+			fail("Exception expected");
 		}
 		catch (UnsupportedOperationException uoe){
 			//IGNORE

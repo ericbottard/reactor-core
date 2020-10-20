@@ -36,7 +36,6 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -54,7 +53,6 @@ import reactor.util.context.Context;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.junit.Assert.assertFalse;
 
 public class FluxBufferPredicateTest {
 
@@ -88,7 +86,7 @@ public class FluxBufferPredicateTest {
 				.expectNext(Arrays.asList(7, 8))
 				.expectComplete()
 				.verify();
-		assertFalse(sp1.hasDownstreams());
+		assertThat(sp1.hasDownstreams()).isFalse();
 	}
 
 	@Test
@@ -141,7 +139,7 @@ public class FluxBufferPredicateTest {
 		            .then(() -> sp1.onError(new RuntimeException("forced failure")))
 		            .expectErrorMessage("forced failure")
 		            .verify();
-		assertFalse(sp1.hasDownstreams());
+		assertThat(sp1.hasDownstreams()).isFalse();
 	}
 
 	@Test
@@ -165,7 +163,7 @@ public class FluxBufferPredicateTest {
 					.then(() -> sp1.onNext(5))
 					.expectErrorMessage("predicate failure")
 					.verify();
-		assertFalse(sp1.hasDownstreams());
+		assertThat(sp1.hasDownstreams()).isFalse();
 	}
 	@Test
 	@SuppressWarnings("unchecked")
@@ -195,7 +193,7 @@ public class FluxBufferPredicateTest {
 				.expectNext(Arrays.asList(6, 7, 8))
 				.expectComplete()
 				.verify();
-		assertFalse(sp1.hasDownstreams());
+		assertThat(sp1.hasDownstreams()).isFalse();
 	}
 
 	@Test
@@ -216,7 +214,7 @@ public class FluxBufferPredicateTest {
 		            .then(() -> sp1.onError(new RuntimeException("forced failure")))
 		            .expectErrorMessage("forced failure")
 		            .verify();
-		assertFalse(sp1.hasDownstreams());
+		assertThat(sp1.hasDownstreams()).isFalse();
 	}
 
 	@Test
@@ -240,7 +238,7 @@ public class FluxBufferPredicateTest {
 					.then(() -> sp1.onNext(5))
 					.expectErrorMessage("predicate failure")
 					.verify();
-		assertFalse(sp1.hasDownstreams());
+		assertThat(sp1.hasDownstreams()).isFalse();
 	}
 
 	@Test
@@ -401,7 +399,7 @@ public class FluxBufferPredicateTest {
 				.expectNext(Arrays.asList(7, 8))
 				.expectComplete()
 				.verify();
-		assertFalse(sp1.hasDownstreams());
+		assertThat(sp1.hasDownstreams()).isFalse();
 	}
 
 	@Test
@@ -432,7 +430,7 @@ public class FluxBufferPredicateTest {
 			    .expectNext(Collections.singletonList(9))
 				.expectComplete()
 				.verify(Duration.ofSeconds(1));
-		assertFalse(sp1.hasDownstreams());
+		assertThat(sp1.hasDownstreams()).isFalse();
 	}
 
 	@Test
@@ -458,7 +456,7 @@ public class FluxBufferPredicateTest {
 		            .then(sp1::onComplete)
 		            .expectComplete()
 		            .verify(Duration.ofSeconds(1));
-		assertFalse(sp1.hasDownstreams());
+		assertThat(sp1.hasDownstreams()).isFalse();
 	}
 
 	@Test
@@ -478,7 +476,7 @@ public class FluxBufferPredicateTest {
 		            .then(() -> sp1.onError(new RuntimeException("forced failure")))
 		            .expectErrorMessage("forced failure")
 		            .verify(Duration.ofMillis(100));
-		assertFalse(sp1.hasDownstreams());
+		assertThat(sp1.hasDownstreams()).isFalse();
 	}
 
 	@Test
@@ -503,7 +501,7 @@ public class FluxBufferPredicateTest {
 					.then(() -> sp1.onNext(5)) //fails
 					.expectErrorMessage("predicate failure")
 					.verify(Duration.ofMillis(100));
-		assertFalse(sp1.hasDownstreams());
+		assertThat(sp1.hasDownstreams()).isFalse();
 	}
 
 	@Test
@@ -515,7 +513,7 @@ public class FluxBufferPredicateTest {
 				() -> { throw new RuntimeException("supplier failure"); },
 				FluxBufferPredicate.Mode.UNTIL);
 
-		Assert.assertFalse("sp1 has subscribers?", sp1.hasDownstreams());
+		assertThat(sp1.hasDownstreams()).as("sp1 has subscribers?").isFalse();
 
 		StepVerifier.create(bufferUntil)
 		            .expectErrorMessage("supplier failure")
@@ -536,7 +534,7 @@ public class FluxBufferPredicateTest {
 				},
 				FluxBufferPredicate.Mode.UNTIL);
 
-		Assert.assertFalse("sp1 has subscribers?", sp1.hasDownstreams());
+		assertThat(sp1.hasDownstreams()).as("sp1 has subscribers?").isFalse();
 
 		StepVerifier.create(bufferUntil)
 		            .then(() -> sp1.onNext(1))
@@ -555,7 +553,7 @@ public class FluxBufferPredicateTest {
 				() -> null,
 				FluxBufferPredicate.Mode.UNTIL);
 
-		Assert.assertFalse("sp1 has subscribers?", sp1.hasDownstreams());
+		assertThat(sp1.hasDownstreams()).as("sp1 has subscribers?").isFalse();
 
 		StepVerifier.create(bufferUntil)
 		            .then(() -> sp1.onNext(1))

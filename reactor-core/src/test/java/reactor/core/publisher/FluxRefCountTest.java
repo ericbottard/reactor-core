@@ -24,7 +24,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.reactivestreams.Subscription;
 import reactor.core.CoreSubscriber;
@@ -182,30 +181,30 @@ public class FluxRefCountTest {
 
 		Flux<Integer> p = e.publish().refCount();
 
-		Assert.assertFalse("sp has subscribers?", e.downstreamCount() != 0);
+		assertThat(e.downstreamCount() != 0).as("sp has subscribers?").isFalse();
 
 		AssertSubscriber<Integer> ts1 = AssertSubscriber.create();
 		p.subscribe(ts1);
 
-		Assert.assertTrue("sp has no subscribers?", e.downstreamCount() != 0);
+		assertThat(e.downstreamCount() != 0).as("sp has no subscribers?").isTrue();
 
 		AssertSubscriber<Integer> ts2 = AssertSubscriber.create();
 		p.subscribe(ts2);
 
-		Assert.assertTrue("sp has no subscribers?", e.downstreamCount() != 0);
+		assertThat(e.downstreamCount() != 0).as("sp has no subscribers?").isTrue();
 
 		e.onNext(1);
 		e.onNext(2);
 
 		ts1.cancel();
 
-		Assert.assertTrue("sp has no subscribers?", e.downstreamCount() != 0);
+		assertThat(e.downstreamCount() != 0).as("sp has no subscribers?").isTrue();
 
 		e.onNext(3);
 
 		ts2.cancel();
 
-		Assert.assertFalse("sp has subscribers?", e.downstreamCount() != 0);
+		assertThat(e.downstreamCount() != 0).as("sp has subscribers?").isFalse();
 
 		ts1.assertValues(1, 2)
 		.assertNoError()
@@ -222,30 +221,30 @@ public class FluxRefCountTest {
 
 		Flux<Integer> p = e.publish().refCount(2);
 
-		Assert.assertFalse("sp has subscribers?", e.downstreamCount() != 0);
+		assertThat(e.downstreamCount() != 0).as("sp has subscribers?").isFalse();
 
 		AssertSubscriber<Integer> ts1 = AssertSubscriber.create();
 		p.subscribe(ts1);
 
-		Assert.assertFalse("sp has subscribers?", e.downstreamCount() != 0);
+		assertThat(e.downstreamCount() != 0).as("sp has subscribers?").isFalse();
 
 		AssertSubscriber<Integer> ts2 = AssertSubscriber.create();
 		p.subscribe(ts2);
 
-		Assert.assertTrue("sp has no subscribers?", e.downstreamCount() != 0);
+		assertThat(e.downstreamCount() != 0).as("sp has no subscribers?").isTrue();
 
 		e.onNext(1);
 		e.onNext(2);
 
 		ts1.cancel();
 
-		Assert.assertTrue("sp has no subscribers?", e.downstreamCount() != 0);
+		assertThat(e.downstreamCount() != 0).as("sp has no subscribers?").isTrue();
 
 		e.onNext(3);
 
 		ts2.cancel();
 
-		Assert.assertFalse("sp has subscribers?", e.downstreamCount() != 0);
+		assertThat(e.downstreamCount() != 0).as("sp has subscribers?").isFalse();
 
 		ts1.assertValues(1, 2)
 		.assertNoError()
